@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+  <head>
+    <script type="text/javascript" src="./js/ajax_request.js"></script>
+    <script type="text/javascript" src="./js/pseudo_collection.js"></script>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+        font-family: sans-serif;
+        background: gray;
+        color: #fff;
+      }
+
+      form {
+        align-self: center;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        height: 100px;
+        width: 400px;
+      }
+
+      input {
+        border: none;
+        background: white;
+        color: #333;
+        padding: 10px;
+        font-size: 14pt;
+        box-shadow: 0 4px 10px -5px #333;
+      }
+
+      #result {
+        background: #fff;
+        color: #333;
+        padding: 40px;
+        max-width: 500px;
+        box-shadow: 0 4px 10px -5px #333;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="form">
+      <input type="submit" value="Get Posts">
+    </form>
+    <section id="result">(post results here)</section>
+    <script type="text/javascript">
+
+      //get form elements
+      var form = document.getElementById("form");
+      var result = document.getElementById("result");
+
+      form.onsubmit = (e) => {
+        e.preventDefault();
+
+        //set up collection
+        var posts = new collection("wp_posts");
+
+        //send post request
+        posts.find({ID: 1}, {}, (res) => {
+
+          //use result to update DOM
+          result.innerHTML = JSON.stringify(res);
+        });
+      }
+    </script>
+  </body>
+</html>
