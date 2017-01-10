@@ -16,28 +16,29 @@
       if(count($restraints) > 1){
         $query .= " WHERE ";
         foreach($restraints as $key => $value){
-          $cond = $key . "=" . "'" . $value . "' ";
+          $cond = $key . "=" . "'" . filter_var($value, FILTER_SANITIZE_STRING) . "' ";
           $query .= $cond;
         }
-        if(count($sort) > 0){
-          foreach($sort as $key => $value){
-            if($key == "limit"){
-              $query .= "LIMIT " . $value . " ";
-            }
-            if($key == "sort" && $value == -1){
-              $query .= "ORDER BY ID DESC";
-            }
-            if($key == "sort" && is_array($value)){
-              if($value[array_keys($value)[0]] == -1){
-                $query .= "ORDER BY " . array_keys($value)[0] . " DESC";
-              } else {
-                $query .= "ORDER BY " . array_keys($value)[0] . " ASC";
-              }
+      }
+      if(count($sort) > 0){
+        foreach($sort as $key => $value){
+          if($key == "limit"){
+            $query .= " LIMIT " . filter_var($value, FILTER_SANITIZE_STRING) . " ";
+          }
+          if($key == "sort" && $value == -1){
+            $query .= " ORDER BY ID DESC";
+          }
+          if($key == "sort" && is_array($value)){
+            if($value[array_keys($value)[0]] == -1){
+              $query .= "ORDER BY " . array_keys($value)[0] . " DESC";
+            } else {
+              $query .= "ORDER BY " . array_keys($value)[0] . " ASC";
             }
           }
         }
       }
       $res;
+
       try {
         $res = json_encode(mysqli_fetch_all(mysqli_query($this->conn, $query), MYSQLI_ASSOC));
       } catch(Exception $e){
@@ -52,7 +53,7 @@
       if(count($restraints) > 0){
         $query .= " WHERE ";
         foreach($restraints as $key => $value){
-          $cond = $key . "=" . "'" . $value . "' ";
+          $cond = $key . "=" . "'" . filter_var($value, FILTER_SANITIZE_STRING) . "' ";
           $query .= $cond;
         }
         $query .= "LIMIT 1";
@@ -75,15 +76,16 @@
       foreach($data as $key => $value){
         if(++$i === $numItems) {
           $keys .= "". $key ."";
-          $values .= "'" . $value . "'";
+          $values .= "'" . filter_var($value, FILTER_SANITIZE_STRING) . "'";
         } else {
           $keys .= "". $key .",";
-          $values .= "'" . $value . "',";
+          $values .= "'" . filter_var($value, FILTER_SANITIZE_STRING) . "',";
         }
       }
       $query .= $keys . ") VALUES " . $values . ")";
 
       $res;
+
       try {
         $res = json_encode(mysqli_query($this->conn, $query));
       } catch(Exception $e){
@@ -97,11 +99,11 @@
       //UNTESTED
       $query = "UPDATE " . $this->table . " SET ";
       foreach($data as $key => $value){
-        $query .= $key . "='" . $value . "'";
+        $query .= $key . "='" . filter_var($value, FILTER_SANITIZE_STRING) . "'";
       }
       $query .= "WHERE ";
       foreach($restraints as $key => $value){
-        $cond = $key . "=" . "'" . $value . "' ";
+        $cond = $key . "=" . "'" . filter_var($value, FILTER_SANITIZE_STRING) . "' ";
         $query .= $cond;
       }
       $res;

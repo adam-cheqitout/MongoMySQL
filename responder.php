@@ -12,8 +12,14 @@
     echo test_init("localhost", "root", "");
   }
   if(isset($_POST['collection'])){
+
+    //initialize
     $collection = new mongomysql("localhost", "mongomysql", $_POST['collection'], "root", "");
+
+    //if method exists
     if(isset($_POST['method'])){
+
+      //find request
       if($_POST['method'] == "find"){
         $posts = $collection->find(json_decode($_POST['restraints']), json_decode($_POST['sort']));
         echo $posts;
