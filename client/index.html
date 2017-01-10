@@ -43,27 +43,45 @@
     </style>
   </head>
   <body>
+    <form id="post_form">
+      <textarea name="post_content" placeholder="Write Your Post">
+      </textarea>
+      <input type="submit" value="Post">
+    </form>
     <form id="form">
       <input type="submit" value="Get Posts">
     </form>
     <section id="result">(post results here)</section>
     <script type="text/javascript">
 
+      //only needs to be called on first run if database hasn't been initialized
+      init_ajax_request((res) => {
+        console.log(res);
+      });
+
       //get form elements
       var form = document.getElementById("form");
+      var post_form = document.getElementById("post_form");
       var result = document.getElementById("result");
+      var posts = new collection("posts");
 
       form.onsubmit = (e) => {
         e.preventDefault();
 
-        //set up collection
-        var posts = new collection("wp_posts");
-
         //send post request
-        posts.find({ID: 1}, {}, (res) => {
-
+        posts.find({}, {}, (res) => {
           //use result to update DOM
           result.innerHTML = JSON.stringify(res);
+        });
+      }
+
+      post_form.onsubmit = (e) => {
+        e.preventDefault();
+        console.log(e.target.post_content.value);
+        posts.insert({post: e.target.post_content.value}, () => {
+          posts.find({}, {}, (res) => {
+            result.innerHTML = JSON.stringify(res);
+          })
         });
       }
     </script>
